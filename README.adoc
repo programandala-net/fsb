@@ -33,6 +33,9 @@ fsb provides two main converters (to FB and FBS formats, as
 explained below); but a set of additional, more specific
 converters are included as shell files.
 
+Project web page:
+<http://programandala.net/en.program.fsb.html>.
+
 == Requirements
 
 The Vim editor must be installed in the system. The GUI version
@@ -226,12 +229,12 @@ the normal mode of Vim.
 |===
 | Shortcut | Action
 
-| .fb | Convert the current buffer to a FB file. |
-| .fbs | Convert the current buffer to a FBS file. |
+| .fb | Convert the current buffer to a FB file.
+| .fbs | Convert the current buffer to a FBS file.
 | ,s | Toggle the FSB style (underline block headers and show a right column limit).
 | ,f | Toggle the block format beetween the standard 16x64 and the alternative 32x32 (used by some 8-bit Forth systems).
-| ,g | Go to the block specified as a prefix count (first block is 0). |
-| ,G | Go to the block specified as as prefix count, counting backwards from the end of the file (last block is 0). |
+| ,g | Go to the block specified as a prefix count (first block is 0).
+| ,G | Go to the block specified as as prefix count, counting backwards from the end of the file (last block is 0).
 | ,b | Go to the bottom of the current block.
 | ,t | Go to the top of the current block.
 | ,p | Go to the previous block.
