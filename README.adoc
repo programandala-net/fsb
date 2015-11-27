@@ -1,0 +1,301 @@
+= fsb
+:author: Marcos Cruz (programandala.net)
+:revdate: 2015-11-27
+
+// Copyright (C) 2015 Marcos Cruz (programandala.net)
+//
+// You may do whatever you want with this work, so long as you
+// retain the copyright notice(s) and this license in all
+// redistributed copies and derived works. There is no warranty.
+
+// This file is written in AsciiDoc/Asciidoctor format.
+// See <http://asciidoctor.org>.
+
+== Description
+
+fsb is a preprocessor and converter of Forth source files.  Its
+goal is to make it easy to edit and mantain Forth source files,
+in ordinary text format, for Forth systems that use blocks
+files.
+
+Thanks to some simple layout conventions, the source file can be
+edited without the lack of space imposed by blocks, thus making
+it possible to include detailed comments and arrange a clear
+layout.
+
+fsb is written as a plugin for the Vim editor.  It can be used
+to edit Forth sources with the Vim editor (thus using the
+included associated style and key mappings), or as a command
+line tool to convert Forth source files edited with any other
+editor.
+
+fsb provides two main converters (to FB and FBS formats, as
+explained below); but a set of additional, more specific
+converters are included as shell files.
+
+== Requirements
+
+The Vim editor must be installed in the system. The GUI version
+(called gvim) is not required; the console version is enough.
+
+Some converters have specific requirements. See their source
+code (the files with the ".sh" filename extension).
+
+fsb can run on any system Vim can run on, and convert files from
+the FSB format to FS, FB or FBS formats (see below). But the
+other converters, provided only as shell files, run only on
+GNU/Linux or other flavours of Unix.
+
+== Forth source filename extensions
+
+The filename extensions used by fsb are derived from ".fs" and
+".fb", used by Gforth and other Forth systems.
+
+|===
+| Extension | Description
+
+| .fs | Forth stream file.
+| .fsb | Forth stream file with blocks-like layout.
+| .fb | Forth blocks file.
+| .fbs | Forth blocks file with stream-like end-of-lines.
+|===
+
+== The FBS format
+
+FBS is the name fsb uses for a _target format_ it can convert
+FSB sources to. FBS files are blocks files but with 63-chars
+lines and end of lines.  This is the format used by the library
+of the lina Forth system.
+
+== The FSB format
+
+fsb uses an ad-hoc simple format for Forth source, called FSB.
+The ".fsb" filename extension is used.  FSB files are ordinary
+text files with only three simple layout conventions: block
+headers, metacomments and empty lines.
+
+=== Block headers
+
+Block headers must be marked with a comment. There are three
+ways to do it:
+
+1. A paren comment that starts at the first column of the line.
+2. A slash comment that starts at the first columen of the line
+*and* ends with a second closing slash. This alternative is
+provided in order to include words with closing parens.
+3. A dot-paren comment that starts at the first column of the line.
+
+In all cases, more comments or Forth code can be included after
+the header comment.
+
+Examples:
+
+----
+( Tools)
+
+    \ this is block 0
+
+.( More tools) \ anything is allowed here
+
+    \ this is block 1
+
+( MAIN-WORD ) page
+
+    \ this is block 2
+
+\ (CORE) \
+
+    \ this is block 3
+
+\ (MORE) \ by MEE on 2015-09-19
+
+    \ this is block 4
+----
+
+The only header comment that is not necessary is the first one,
+for block 0. When there is something (except metacomments, see
+below) at the top of the file, it's suppossed to be the
+contents of the first block.  Example:
+
+----
+\ This is block 0,
+\ even without an actual block header.
+
+: bla  ( -- )  recurse  ;
+
+( More )
+
+\ This is block 1.
+----
+
+=== Metacomments
+
+Metacomments are comments that will be removed from the target
+file.  They are backslash comments that are on their own line
+and have at least one space on the left.
+
+----
+( block header )
+
+\ This comment will be preserved.
+
+variable range \ this comment will be preserved as well
+
+  \ But all these comments
+  \ will be removed
+  \ from the target file.
+
+----
+
+=== Empty lines
+
+All empty lines are ignored and will be removed during the
+conversion.
+
+== Directives
+
+fsb recognizes some directives, provided they are the first word
+of a backslash metacomment. Directive names start with a hash
+sign. Example:
+
+----
+forth code here
+
+  \ #directive-name directive-parameters
+
+more forth code here
+----
+
+=== #vim
+
+The `#vim` directive makes it possible to execute any Vim
+command to preprocess the source.
+
+----
+  \ #vim any-vim-ex-command
+----
+
+Executing the `#vim` directives is the first task done by fsb.
+The directives are removed from the source before executing
+them, and they are executed in the order they appear in the
+source.
+
+This example is extracted from the sources of the
+http://programandala.net/en.program.tron_0xf.html[Tron 0xF] game:
+
+----
+  \ The following '#vim' directives, processed by fsb,
+  \ translate the UTF-8 chars in this source file to
+  \ ZX Spectrum's user defined graphics.
+
+  \ Esperanto letters:
+  \ #vim %substitute@Ĉ@\=nr2char(144)@g
+  \ #vim %substitute@ĉ@\=nr2char(145)@g
+  \ #vim %substitute@Ĝ@\=nr2char(146)@g
+  \ #vim %substitute@ĝ@\=nr2char(147)@g
+  \ #vim %substitute@Ĥ@\=nr2char(148)@g
+  \ #vim %substitute@ĥ@\=nr2char(149)@g
+  \ #vim %substitute@Ĵ@\=nr2char(150)@g
+  \ #vim %substitute@ĵ@\=nr2char(151)@g
+  \ #vim %substitute@Ŝ@\=nr2char(152)@g
+  \ #vim %substitute@ŝ@\=nr2char(153)@g
+  \ #vim %substitute@Ŭ@\=nr2char(154)@g
+  \ #vim %substitute@ŭ@\=nr2char(155)@g
+----
+
+=== #previm
+
+The `#previm` directive works the same way than `#vim`.  The
+only difference is `#previm` directives are executed first. This
+makes it possible to modify the `#vim` directives with the
+`#previm` directives.
+
+=== #trace
+
+The `#trace` directive turns the conversion tracing on: the
+steps of the conversion will be saved into the <.fsb_trace>
+directory. This was first intended to debug the converter, but
+can be useful for detecting errors of the source layout.
+
+== Key mappings
+
+Some key mappings are provided in order to help during the
+edition of FSB files with the Vim editor. All of them work in
+the normal mode of Vim.
+
+|===
+| Shortcut | Action
+
+| .fb | Convert the current buffer to a FB file. |
+| .fbs | Convert the current buffer to a FBS file. |
+| ,s | Toggle the FSB style (underline block headers and show a right column limit).
+| ,f | Toggle the block format beetween the standard 16x64 and the alternative 32x32 (used by some 8-bit Forth systems).
+| ,g | Go to the block specified as a prefix count (first block is 0). |
+| ,G | Go to the block specified as as prefix count, counting backwards from the end of the file (last block is 0). |
+| ,b | Go to the bottom of the current block.
+| ,t | Go to the top of the current block.
+| ,p | Go to the previous block.
+| ,n | Go to the next block.
+| ,<Up> | Move maximum number of valid lines up (usually 16). This is useful to calculate where a new block header is needed.
+| ,<Down> | Move maximum number of valid lines down (usually 16). This is useful to calculate where a new block header is needed.
+| ,c | Check the length of the current block.
+| ,C | Check the length of all blocks.
+| ,# | Show the number of the current block. Known issue: block 0 shows number 1.
+|===
+
+== Converters
+
+Several converters are provided as shell files (with the ".sh"
+filename extension). They can be used from the command line,
+without starting a Vim session.  Most of them are specific to ZX
+Spectrum Forth systems, but may be used as a model for other
+systems.
+
+Some converters have special requirements. See their source file
+for more details.
+
+fsb-abersoft :: ZX Spectrum TAP file for the original unfixed
+Abersoft Forth (one file called "DISC", with 11 1-KiB screens,
+but 11263 bytes instead of 11264).
+
+fsb-abersoft11k :: ZX Spectrum TAP file for Abersoft Forth fixed
+by the Afera library (one file called "DISC", with 11 1-KiB
+screens, 11264 bytes).
+
+fsb-abersoft16k :: ZX Spectrum TAP file for Abersoft Forth
+improved by the Afera library (one file called "DISC", with 16
+1-KiB screens).
+
+fsb-fb :: FB format: classic blocks file.
+
+fsb-fbs :: FBS format: blocks file but with 63-character lines
+and ends of line (the format used by the lina Forth system).
+
+fsb-mgt :: ZX Spectrum MGT file (disk image for GDOS, G+DOS or
+Beta DOS), with the Forth source saved on the sectors.
+
+fsb-tap :: ZX Spectrum TAP file (tape), for any ZX Spectrum
+Forth.
+
+As the two main conversions (fsb2fb and fsb2fbs) are done by the
+Vim plugin itself, they are associated to key shortcuts.
+
+== Install and uninstall
+
+1. Edit <CONFIG.sh> and change the installation directories and
+the installation command, if you need. Several options are
+provided in commented out lines.
+
+2. Run <INSTALL.sh>.
+
+In order to uninstall fsb, run <UNINSTALL.sh>.
+
+== Known issues
+
+- The ",#" key mapping shows number 1 for block 0. This is
+  caused by the simple method used to count the block headers
+  above the current cursor position.
+
+- The optional 32x32 block format has not been tested.
+
+// vim: tw=64:ts=2:sts=2:sw=2:et
