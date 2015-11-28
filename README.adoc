@@ -1,6 +1,6 @@
 = fsb
 :author: Marcos Cruz (programandala.net)
-:revdate: 2015-11-27
+:revdate: 2015-11-28
 
 // Copyright (C) 2015 Marcos Cruz (programandala.net)
 //
@@ -18,7 +18,7 @@ goal is to make it easy to edit and mantain Forth source files,
 in ordinary text format, for Forth systems that use blocks
 files.
 
-Thanks to some simple layout conventions, the source file can be
+Following some simple layout conventions, the source file can be
 edited without the lack of space imposed by blocks, thus making
 it possible to include detailed comments and arrange a clear
 layout.
@@ -300,5 +300,30 @@ In order to uninstall fsb, run <UNINSTALL.sh>.
   above the current cursor position.
 
 - The optional 32x32 block format has not been tested.
+
+== fsb2
+
+fsb has been used to develop two projects in Forth:
+http://programandala.net/en.program.afera.html[Afera] and
+http://programandala.net/en.program.tron_0xf.html[Tron 0xF].  It
+worked great, but the development of
+http://programandala.net/en.program.tron_0xf.html[Solo Forth],
+with a library file of more than 400 hundreds blocks and
+growing, was too much for fsb on a Raspbery Pi 2...  Then a
+faster and simpler version was developed in Forth.  It's called
+http://programandala.net/en.program.fsb2.html[fsb2].
+
+fsb and fsb2 do the same: they convert the same source format
+and provide the same target formats.  But there are some
+differences:
+
+- fsb2 is much faster.
+- fsb2 does not provide directives.
+- fsb2 does not allow comments or code at the right of a
+  backslash-format block header.
+- fsb2 doesn't remove the source filename extension from the
+  target filename.
+
+fsb and fsb2 can be installed at the same time.
 
 // vim: tw=64:ts=2:sts=2:sw=2:et
