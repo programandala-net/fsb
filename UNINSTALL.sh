@@ -30,6 +30,7 @@
 # History
 
 # 2015-10-12: First version.
+# 2015-12-29: SuperForth converter.
 
 # ##############################################################
 
@@ -44,4 +45,5 @@ rm -f $BINDIR/fsb-abersoft
 rm -f $BINDIR/fsb-fb
 rm -f $BINDIR/fsb-fbs
 rm -f $BINDIR/fsb-mgt
+rm -f $BINDIR/fsb-superforth
 rm -f $BINDIR/fsb-tap

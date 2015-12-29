@@ -1,6 +1,6 @@
 = fsb
 :author: Marcos Cruz (programandala.net)
-:revdate: 2015-11-28
+:revdate: 2015-12-29
 
 // Copyright (C) 2015 Marcos Cruz (programandala.net)
 //
@@ -276,6 +276,8 @@ and ends of line (the format used by the lina Forth system).
 
 fsb-mgt :: ZX Spectrum MGT file (disk image for GDOS, G+DOS or
 Beta DOS), with the Forth source saved on the sectors.
+
+fsb-superforth :: Sinclair QL SuperForth individual block files.
 
 fsb-tap :: ZX Spectrum TAP file (tape), for any ZX Spectrum
 Forth.
