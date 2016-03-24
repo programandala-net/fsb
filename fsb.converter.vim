@@ -1,15 +1,15 @@
 " fsb.converter.vim
 
 " fsb
-" Version A-11-20151127
+" Version 0.11.1+20160324
 
 " A Forth source preprocessor and converter
 " to create classic blocks files with the Vim editor
- 
+
 " **************************************************************
 " Author and license
 
-" Copyright (C) 2015 Marcos Cruz (programandala.net)
+" Copyright (C) 2015,2016 Marcos Cruz (programandala.net)
 
 " You may do whatever you want with this work, so long as you
 " retain the copyright notice(s) and this license in all
@@ -96,7 +96,7 @@ endfunction
 function! FsbToggleTheFormat()
 
   " Toggle the layout of the blocks between 16x64 (default) and 32x32.
-  
+
   let b:standardFormat=invert(b:standardFormat)
   call FsbSetTheFormat(b:standardFormat)
 
@@ -179,7 +179,7 @@ function! FsbMaxValidLinesUp()
 
   let l:count=b:linesPerBlock
   while l:count
-    if FsbValidLine() 
+    if FsbValidLine()
       let l:count=l:count-1
     endif
     call cursor(line('.')-1,1)
@@ -202,7 +202,7 @@ function! FsbMaxValidLinesDown()
 
   let l:count=b:linesPerBlock
   while l:count && !FsbAtLastLine()
-    if FsbValidLine() 
+    if FsbValidLine()
       let l:count=l:count-1
     endif
     call cursor(line('.')+1,1)
@@ -306,6 +306,8 @@ function! FsbCheckCurrentBlock(block,silent)
   " Check the lenght of the current block.
   " block = number of the current block, or -1 if unknown
 
+  let l:errorFlag=0
+
   let l:blockId = a:block==-1 ? "the current block" : "block #".a:block
 
   let l:currentLine=line('.')
@@ -342,7 +344,7 @@ function! FsbCheckCurrentBlock(block,silent)
     let l:errorFlag=(l:validLines>b:linesPerBlock)
     if l:errorFlag
       echohl Error
-      echomsg "Error:" l:blockId "has" l:validLines "valid code lines; the maximum is" b:linesPerBlock 
+      echomsg "Error:" l:blockId "has" l:validLines "valid code lines; the maximum is" b:linesPerBlock
     else
       if !a:silent
         echohl Normal
@@ -388,7 +390,7 @@ endfunction
 function! FsbBlockNumber()
 
   " Show the number of the current block.
-  
+
   " A dry-run substitution of block headers does the trick:
   " it shows the number of occurrences in the desired range.
 
@@ -419,7 +421,7 @@ endfunction
 " an optional parameter.
 
 " Examples:
-" 
+"
 " / Substitute a string in the whole file:
 " / #vim %substitute/Hello/Goodbye/g
 " / Substitute a string in the definition of the word 'MYWORD':
@@ -478,7 +480,7 @@ function! FsbVimDirectives()
 
   " Search for all '#previm' and '#vim' directives and execute
   " their Vim commands.
-  
+
   " The '#previm' and '#vim' directives make it possible to
   " execute any ex Vim command in the source.
   "
@@ -509,14 +511,14 @@ function! FsbTraceDirective()
 
   let b:trace=search('^\s\+\\\s\+#trace\s*$','wc')
 
-  if b:trace 
+  if b:trace
 
     " Directory to save the conversion steps into.
     let s:traceDir=s:sourceFileDir.'/.fsb_trace/'
     if !isdirectory(s:traceDir)
       " XXX TODO if exists("*mkdir")
       " XXX TODO catch possible errors
-      call mkdir(s:traceDir,'',0700) 
+      call mkdir(s:traceDir,'',0700)
     endif
 
   endif
@@ -541,7 +543,7 @@ function! FsbSaveStep(description)
 
   " XXX INFORMER
   " echo 'Step' l:number ':' a:description
-  
+
   let l:number=strpart(l:number,len(l:number)-2)
   silent execute 'write! ++bin ++bad=keep '.s:traceDir.s:sourceFilename.'.step_'.l:number.'_'.a:description
   let s:step=s:step+1
@@ -555,7 +557,7 @@ function! Fsb2(filetype)
 
   " a:filetype = format and filename extension of the output
   " file:
-  
+
   "     fb   = Forth block file
   "     fbs  = Forth block file with end of lines
 
@@ -575,7 +577,7 @@ function! Fsb2(filetype)
 
   let l:fb  = a:filetype=='fb'
   let l:fbs = a:filetype=='fbs'
-  
+
   " ----------------------------------------------------------
   " Init the saving of steps
 
@@ -616,17 +618,17 @@ function! Fsb2(filetype)
   silent! execute 'edit ++bin '.s:outputFile
 
   call FsbSetTheFormat(t:standardFormat)
-  
+
   " XXX INFORMER
   " echo 'Editing the target file'
-  
+
   " Don't add an end of line at the end of the file
   setlocal bin
   setlocal noendofline
 
   " ----------------------------------------------------------
   " Vim directives
- 
+
   call FsbVimDirectives()
   call FsbTraceDirective()
 
@@ -642,7 +644,7 @@ function! Fsb2(filetype)
   " The lines are not removed, but just emptied, in order to
   " keep the original line numbers in possible error messages
   " caused later by a too long line code.
-  
+
   silent! %substitute@^\s\+\\\(\s.*\)\?$@@e
 
   call FsbSaveStep('metacomments_removed')
@@ -664,7 +666,7 @@ function! Fsb2(filetype)
   " Remove the empty lines
 
   silent! %substitute@^\n@@e
- 
+
   call FsbSaveStep('empty_lines_removed')
 
   " ----------------------------------------------------------
@@ -744,7 +746,7 @@ function! Fsb2(filetype)
 
   " ----------------------------------------------------------
   " Add trailing spaces to all lines
-  
+
 if 1 " XXX original method
 
   " XXX FIXME This adds a new blank line at the end! Why?
@@ -766,7 +768,7 @@ else " XXX alternative method
   " XXX INFORMER
    " echo "The last line is " line('$')
 "  write /tmp/kk2.txt
-  
+
   call cursor(1,1)
   while 1
     let l:line=getline(line('.'))
@@ -782,7 +784,7 @@ else " XXX alternative method
     " count returned by `line('$')`. The test files saved during
     " the process are perfect, but `line('$')` returns the last
     " line number +1!
-    
+
     " if line('.')==line('$')-1
     " XXX -- 2015-03-23: now it works (?!):
     if line('.')==line('$')
@@ -809,7 +811,7 @@ endif " XXX TMP
   endif
 
   call FsbSaveStep('lines_trimmed_to_the_final_length')
-  
+
   if l:fb
     " .fb format
     " Remove all end of lines
@@ -832,7 +834,7 @@ endif " XXX TMP
 endfunction
 
 function! Fsb2fb()
-  
+
   " Save a copy of the Forth source code hold in the current
   " buffer to a new file, with the format of Forth blocks.  The
   " output file will have its extension changed to '.fb'.
@@ -925,7 +927,7 @@ nmap <silent> <buffer> ,# :call FsbBlockNumber()<Return>
 "
 " 2015-03-10: New: 'loaded_fsb' check.
 "
-" 2015-03-11: 
+" 2015-03-11:
 "
 " Fix: The program always returned '1' exit code, what made
 " 'make' fail when used in a Makefile.  In order to prevent an
@@ -936,7 +938,7 @@ nmap <silent> <buffer> ,# :call FsbBlockNumber()<Return>
 " Fix: The 'c' flag (accept a match at the current cursor
 " position) was needed in the 'search()' function that searches
 " for block titles. Otherwise empty blocks were not recognized.
-" 
+"
 " Fix: The 'set binary' was needed in order to make 'set
 " noendofline' effective.
 "
@@ -977,7 +979,7 @@ nmap <silent> <buffer> ,# :call FsbBlockNumber()<Return>
 " way, but it seems more intuitive and practical this way.
 "
 " 2015-03-19:
-" 
+"
 " Fix: The algorythm of 'FsbCheckCurrentBlock()' was wrong: it
 " failed at the last block because it did a comparation between
 " limit lines, moving 16 lines down twice: ignoring or not the
@@ -1122,5 +1124,19 @@ nmap <silent> <buffer> ,# :call FsbBlockNumber()<Return>
 " Published on GitHub.
 "
 " Version A-11.
+"
+" 2016-03-24:
+"
+" Fix: `l:errorFlag` was not initialized in
+" `FsbCheckCurrentBlock()`, what caused error messages when
+" checking an empty fake block 0 (a file header with
+" metacomments).
+"
+" Removed trailing spaces from the source.
+"
+" Updated the version number after Semantic Versioning
+" (http://semver.org):
+"
+" Version 0.11.1+20160324.
 
 " vim: tw=64:ts=2:sts=2:sw=2:et
