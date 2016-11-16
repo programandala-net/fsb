@@ -1,8 +1,8 @@
 = fsb
 :author: Marcos Cruz (programandala.net)
-:revdate: 2015-12-29
+:revdate: 2016-11-16
 
-// Copyright (C) 2015 Marcos Cruz (programandala.net)
+// Copyright (C) 2015,2016 Marcos Cruz (programandala.net)
 //
 // You may do whatever you want with this work, so long as you
 // retain the copyright notice(s) and this license in all
@@ -306,14 +306,20 @@ In order to uninstall fsb, run <UNINSTALL.sh>.
 == fsb2
 
 fsb has been used to develop two projects in Forth:
-http://programandala.net/en.program.afera.html[Afera] and
-http://programandala.net/en.program.tron_0xf.html[Tron 0xF].  It
+http://programandala.net/en.program.afera.html[Afera]
+(http://github.com/programanda-net/afera[Afera in GitHub])
+and
+http://programandala.net/en.program.tron_0xf.html[Tron 0xF]
+(http://github.com/programandala-net/tron-0xf)[Tron 0xF in GitHub]).
+It
 worked great, but the development of
-http://programandala.net/en.program.tron_0xf.html[Solo Forth],
+http://programandala.net/en.program.solo_forth.html[Solo Forth],
+(http://github.com/programandala-net/solo-forth[Solo Forth in GitHub]),
 with a library file of more than 400 hundreds blocks and
 growing, was too much for fsb on a Raspbery Pi 2...  Then a
 faster and simpler version was developed in Forth.  It's called
-http://programandala.net/en.program.fsb2.html[fsb2].
+http://programandala.net/en.program.fsb2.html[fsb2]
+(http://github.com/programandala-net/fsb2[fsb2 in GitHub]).
 
 fsb and fsb2 do the same: they convert the same source format
 and provide the same target formats.  But there are some
@@ -325,6 +331,7 @@ differences:
   backslash-format block header.
 - fsb2 doesn't remove the source filename extension from the
   target filename.
+- fsb2 supports TRD disk images as target format.
 
 fsb and fsb2 can be installed at the same time.
 
