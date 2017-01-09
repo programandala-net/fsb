@@ -1,7 +1,7 @@
 " fsb.converter.vim
 
 " fsb
-" Version 0.11.1+20160324
+" Version 0.12.0+20170109
 
 " A Forth source preprocessor and converter
 " to create classic blocks files with the Vim editor
@@ -9,7 +9,7 @@
 " **************************************************************
 " Author and license
 
-" Copyright (C) 2015,2016 Marcos Cruz (programandala.net)
+" Copyright (C) 2015,2016,2017 Marcos Cruz (programandala.net)
 
 " You may do whatever you want with this work, so long as you
 " retain the copyright notice(s) and this license in all
@@ -299,6 +299,40 @@ endfunction
 
 function! FsbLineTooLongError()
   echoerr "line" line('.') "is longer than" b:charsPerLineMinus1 "characters"
+endfunction
+
+function! FsbCheckLines(silent)
+
+  " Check the lenght of all lines, regardless of blocks. This is
+  " useful when editing sources in FSA format, which has no
+  " block headers except the first one.
+
+  let l:errorFlag=0
+
+  let l:currentLine=line('.')
+  let l:currentCol=col('.')
+
+  let l:validLines=0 " counter
+  call cursor(1,1)
+
+  while !FsbAtLastLine() " not end of file?
+
+    let l:validLine=FsbValidLine()
+    if l:validLine
+      let l:errorFlag=strchars(getline(line('.')))>b:charsPerLineMinus1
+      if l:errorFlag
+        call FsbLineTooLongError()
+        break
+      endif
+    endif
+
+    call cursor(line('.')+1,1) " move to next line
+
+  endwhile
+
+  echohl none
+  return l:errorFlag
+
 endfunction
 
 function! FsbCheckCurrentBlock(block,silent)
@@ -907,6 +941,7 @@ nmap <silent> <buffer> ,<Down> :call FsbMaxValidLinesDown()<Return>
 " Checks
 nmap <silent> <buffer> ,c :call FsbCheckCurrentBlock(-1,0)<Return>
 nmap <silent> <buffer> ,C :call FsbCheckBlocks(0)<Return>
+nmap <silent> <buffer> ,L :call FsbCheckLines(0)<Return>
 
 " Number of the current block
 nmap <silent> <buffer> ,# :call FsbBlockNumber()<Return>
@@ -1138,5 +1173,18 @@ nmap <silent> <buffer> ,# :call FsbBlockNumber()<Return>
 " (http://semver.org):
 "
 " Version 0.11.1+20160324.
+"
+" 2017-01-08:
+"
+" Add function `FsbCheckLines()`.
+"
+" Version 0.12.0+20170108.
+"
+" 2017-01-09:
+"
+" Restore recursion check.
+"
+" Version 0.12.0+20170109.
+
 
 " vim: tw=64:ts=2:sts=2:sw=2:et

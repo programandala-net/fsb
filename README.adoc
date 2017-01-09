@@ -1,8 +1,8 @@
 = fsb
 :author: Marcos Cruz (programandala.net)
-:revdate: 2016-11-16
+:revdate: 2017-01-09
 
-// Copyright (C) 2015,2016 Marcos Cruz (programandala.net)
+// Copyright (C) 2015,2016,2017 Marcos Cruz (programandala.net)
 //
 // You may do whatever you want with this work, so long as you
 // retain the copyright notice(s) and this license in all
@@ -241,8 +241,9 @@ the normal mode of Vim.
 | ,n | Go to the next block.
 | ,<Up> | Move maximum number of valid lines up (usually 16). This is useful to calculate where a new block header is needed.
 | ,<Down> | Move maximum number of valid lines down (usually 16). This is useful to calculate where a new block header is needed.
-| ,c | Check the length of the current block.
-| ,C | Check the length of all blocks.
+| ,c | Check the current block (their length and the length of their lines).
+| ,C | Check all blocks (their lenght and the length of their lines).
+| ,L | Check the length of all lines of the file.
 | ,# | Show the number of the current block. Known issue: block 0 shows number 1.
 |===
 
