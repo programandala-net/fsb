@@ -1,6 +1,6 @@
 = fsb
 :author: Marcos Cruz (programandala.net)
-:revdate: 2017-01-09
+:revdate: 2017-03-01
 
 // Copyright (C) 2015,2016,2017 Marcos Cruz (programandala.net)
 //
@@ -245,6 +245,7 @@ the normal mode of Vim.
 | ,C | Check all blocks (their lenght and the length of their lines).
 | ,L | Check the length of all lines of the file.
 | ,# | Show the number of the current block. Known issue: block 0 shows number 1.
+| ,i | List an index of all blocks.
 |===
 
 == Converters
@@ -275,8 +276,10 @@ fsb-fb :: FB format: classic blocks file.
 fsb-fbs :: FBS format: blocks file but with 63-character lines
 and ends of line (the format used by the lina Forth system).
 
-fsb-mgt :: ZX Spectrum MGT file (disk image for GDOS, G+DOS or
-Beta DOS), with the Forth source saved on the sectors.
+fsb-mgt :: ZX Spectrum MGT file (disk image for GDOS, G+DOS,
+Beta DOS or Uni-DOS), with the Forth source saved on the
+sectors; used by
+http://programandala.net/en.program.solo_forth.html[Solo Forth].
 
 fsb-superforth :: Sinclair QL SuperForth individual block files.
 

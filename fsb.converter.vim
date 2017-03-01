@@ -1,7 +1,7 @@
 " fsb.converter.vim
 
 " fsb
-" Version 0.12.0+20170109
+" Version 0.13.0+20170301
 
 " A Forth source preprocessor and converter
 " to create classic blocks files with the Vim editor
@@ -418,6 +418,36 @@ function! FsbCheckBlocks(silent)
     call cursor(l:currentLine,l:currentCol)
   endif
   return l:errorFlag
+
+endfunction
+
+function! FsbIndex()
+
+  " Show and index of all blocks.
+
+  let l:blockNumber=0
+  let l:currentLine=line('.')
+  let l:currentCol=col('.')
+
+  let l:more=&more
+  set more
+
+  call cursor(1,1)
+  while 1
+    if FsbIsHeader(line('.'))
+      echo l:blockNumber getline(line('.'))
+      let l:blockNumber=blockNumber+1
+    endif
+    if line('.')==line('$')
+      break
+    else
+      call cursor(line('.')+1,1) " move to next line
+    endif
+  endwhile
+
+  call cursor(l:currentLine,l:currentCol)
+  let &more=l:more
+  return
 
 endfunction
 
@@ -942,6 +972,7 @@ nmap <silent> <buffer> ,<Down> :call FsbMaxValidLinesDown()<Return>
 nmap <silent> <buffer> ,c :call FsbCheckCurrentBlock(-1,0)<Return>
 nmap <silent> <buffer> ,C :call FsbCheckBlocks(0)<Return>
 nmap <silent> <buffer> ,L :call FsbCheckLines(0)<Return>
+nmap <silent> <buffer> ,i :call FsbIndex()<Return>
 
 " Number of the current block
 nmap <silent> <buffer> ,# :call FsbBlockNumber()<Return>
@@ -1185,6 +1216,12 @@ nmap <silent> <buffer> ,# :call FsbBlockNumber()<Return>
 " Restore recursion check.
 "
 " Version 0.12.0+20170109.
+"
+" 2017-03-01:
+"
+" Add function `FsbIndex()`.
+"
+" Version 0.13.0+20170301.
 
 
 " vim: tw=64:ts=2:sts=2:sw=2:et

@@ -1,0 +1,12 @@
+= fsb To-Do list
+:author: Marcos Cruz (programandala.net)
+:revdate: 2017-03-01
+
+// This file is written in AsciiDoc/Asciidoctor format.
+// See <http://asciidoctor.org>.
+
+.2017-03-01:
+
+Check the range of blocks showed by `FsbIndex()` and
+`FsbCheckBlocks()`, and compare them to the block navigation.
+
