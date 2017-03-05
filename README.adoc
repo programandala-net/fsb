@@ -1,6 +1,6 @@
 = fsb
 :author: Marcos Cruz (programandala.net)
-:revdate: 2017-03-01
+:revdate: 2017-03-05
 
 // Copyright (C) 2015,2016,2017 Marcos Cruz (programandala.net)
 //
@@ -333,9 +333,7 @@ differences:
 - fsb2 does not provide directives.
 - fsb2 does not allow comments or code at the right of a
   backslash-format block header.
-- fsb2 doesn't remove the source filename extension from the
-  target filename.
-- fsb2 supports TRD disk images as target format.
+- fsb2 supports TRD and DSK disk images as target format.
 
 fsb and fsb2 can be installed at the same time.
 
