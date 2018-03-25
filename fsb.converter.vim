@@ -1,21 +1,23 @@
 " fsb.converter.vim
 
 " fsb
-" Version 0.13.0+20170301
 
 " A Forth source preprocessor and converter
-" to create classic blocks files with the Vim editor
+" for making classic blocks files with the Vim editor
 
-" **************************************************************
+" Version 0.14.0-pre.0+201803252336
+" See change log at the end of the file
+
+" ==============================================================
 " Author and license
 
-" Copyright (C) 2015,2016,2017 Marcos Cruz (programandala.net)
+" Copyright (C) 2015,2016,2017,2018 Marcos Cruz (programandala.net)
 
 " You may do whatever you want with this work, so long as you
 " retain the copyright notice(s) and this license in all
 " redistributed copies and derived works. There is no warranty.
 
-" **************************************************************
+" ==============================================================
 " Description
 
 " fsb is a plugin for the Vim editor. It makes it easy to edit
@@ -28,12 +30,12 @@
 "
 " See the file <README.adoc> for full details.
 
-" **************************************************************
+" ==============================================================
 " History
 
 " See at the end of the file
 
-" **************************************************************
+" ==============================================================
 " To-do
 
 " 2015-03-25: Try the 32x32 format.
@@ -44,7 +46,7 @@
 " 2015-05-14: New: `#block` directive to mark the start of a
 " block.
 
-" **************************************************************
+" ==============================================================
 " Boot
 
 " XXX TMP -- commented out during development
@@ -53,7 +55,7 @@ if exists("b:loaded_fsb")
 endif
 let b:loaded_fsb = 1
 
-" **************************************************************
+" ==============================================================
 " Style
 
 function! FsbToggleTheStyle()
@@ -138,7 +140,7 @@ function! FsbSetTheFormat(standard)
 
 endfunction
 
-" **************************************************************
+" ==============================================================
 " Misc
 
 function! FsbTrim(string)
@@ -151,7 +153,7 @@ function! FsbTrim(string)
 
 endfunction
 
-" **************************************************************
+" ==============================================================
 " Movement
 
 " The movement functions are mapped to function keys at the end
@@ -221,10 +223,14 @@ endfunction
 function! FsbTopOfBlock()
 
   " Go to the header line of the current block.
+  " Update `s:indexLine` and `s:paddedIndexLine`.
 
   if !search(s:blockHeaderExpression,'Wbc')
     call cursor(1,1)
   endif
+
+  let s:indexLine=getline(line('.'))
+  let s:paddedIndexLine=s:indexLine.repeat(" ",b:charsPerLine-strlen(s:indexLine))
 
 endfunction
 
@@ -286,7 +292,7 @@ function! FsbBottomOfBlock()
 
 endfunction
 
-" **************************************************************
+" ==============================================================
 " Checks
 
 function! FsbIsHeader(lineNumber)
@@ -342,7 +348,7 @@ function! FsbCheckCurrentBlock(block,silent)
 
   let l:errorFlag=0
 
-  let l:blockId = a:block==-1 ? "the current block" : "block #".a:block
+  let l:blockId = a:block==-1 ? "current block" : "block ".printf("%5s","#".a:block)
 
   let l:currentLine=line('.')
   let l:currentCol=col('.')
@@ -378,11 +384,11 @@ function! FsbCheckCurrentBlock(block,silent)
     let l:errorFlag=(l:validLines>b:linesPerBlock)
     if l:errorFlag
       echohl Error
-      echomsg "Error:" l:blockId "has" l:validLines "valid code lines; the maximum is" b:linesPerBlock
+      echomsg "Error:" l:blockId s:indexLine "has" l:validLines "lines; the maximum is" b:linesPerBlock
     else
       if !a:silent
         echohl Normal
-        echomsg "The lenght of" l:blockId "is valid:" l:validLines "code lines"
+        echomsg l:blockId s:paddedIndexLine printf("%3d",l:validLines) "lines"
       endif
     endif
 
@@ -472,7 +478,7 @@ function! FsbBlockNumber()
 
 endfunction
 
-" **************************************************************
+" ==============================================================
 " Directives
 
 " Directives make it possible to configure the converter and add
@@ -590,7 +596,7 @@ function! FsbTraceDirective()
 endfunction
 
 
-" **************************************************************
+" ==============================================================
 " Converter
 
 function! FsbSaveStep(description)
@@ -918,7 +924,7 @@ function! Fsb2fbs()
 
 endfunction
 
-" **************************************************************
+" ==============================================================
 " Init
 
 let s:true=-1
@@ -945,7 +951,7 @@ call FsbSetTheFormat(s:true)
 let b:fsbStyle = 0
 call FsbToggleTheStyle()
 
-" **************************************************************
+" ==============================================================
 " Key mappings
 
 " Convert to .fb format
@@ -977,8 +983,8 @@ nmap <silent> <buffer> ,i :call FsbIndex()<Return>
 " Number of the current block
 nmap <silent> <buffer> ,# :call FsbBlockNumber()<Return>
 
-" **************************************************************
-" History
+" ==============================================================
+" Change log
 
 " 2015-02-12: Draft of the style commands.
 "
@@ -1222,6 +1228,10 @@ nmap <silent> <buffer> ,# :call FsbBlockNumber()<Return>
 " Add function `FsbIndex()`.
 "
 " Version 0.13.0+20170301.
-
+"
+" 2018-03-25:
+"
+" Improve the format of the list of checked blocks: Display the
+" index lines and tabularize the list.
 
 " vim: tw=64:ts=2:sts=2:sw=2:et
