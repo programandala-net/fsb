@@ -5,7 +5,7 @@
 " A Forth source preprocessor and converter
 " for making classic blocks files with the Vim editor
 
-" Version 0.14.0-pre.0+201803252336
+" Version 0.14.0-pre.1+201803260005
 " See change log at the end of the file
 
 " ==============================================================
@@ -223,14 +223,13 @@ endfunction
 function! FsbTopOfBlock()
 
   " Go to the header line of the current block.
-  " Update `s:indexLine` and `s:paddedIndexLine`.
+  " Update `s:indexLine`.
 
   if !search(s:blockHeaderExpression,'Wbc')
     call cursor(1,1)
   endif
 
   let s:indexLine=getline(line('.'))
-  let s:paddedIndexLine=s:indexLine.repeat(" ",b:charsPerLine-strlen(s:indexLine))
 
 endfunction
 
@@ -388,7 +387,7 @@ function! FsbCheckCurrentBlock(block,silent)
     else
       if !a:silent
         echohl Normal
-        echomsg l:blockId s:paddedIndexLine printf("%3d",l:validLines) "lines"
+        echomsg l:blockId printf("%3d",l:validLines) "lines " s:indexLine
       endif
     endif
 
@@ -1233,5 +1232,10 @@ nmap <silent> <buffer> ,# :call FsbBlockNumber()<Return>
 "
 " Improve the format of the list of checked blocks: Display the
 " index lines and tabularize the list.
+"
+" 2018-03-26:
+"
+" Reorganize the columns of the list of checked blocks, for
+" clarity.
 
 " vim: tw=64:ts=2:sts=2:sw=2:et
